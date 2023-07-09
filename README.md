@@ -15,7 +15,12 @@ You need to add these following values to `config.json` file (recommended) or yo
 {
   "token": "<your_bot_token>",
   "appId": "<your_bot_application_id>",
-  "guildId": "<your_guild_id>"
+  "guildId": "<your_guild_id>",
+  "channelId": "<your_target_channel_id>",
+  "devChannelId": "<your_development_channel_id>",
+  "voiceChannelId": "<your_target_voice_channel_id>",
+  "voiceChannelLink": "<your_target_voice_channel_link>",
+  "virusTotalApiKey": "<virus_total_api_key>"
 }
 ```
 
