@@ -1,5 +1,5 @@
-# RAMBO bot
-Our Discord bot, its name is Rambo
+# rambo-bot
+My Discord bot, its name is Rambo
 
 ## Requirements
 In able to run project, make sure `node 18.16.0` or above is installed.
@@ -10,7 +10,7 @@ $ git clone git@github.com:samothrakii/rambo-bot.git
 $ cd rambo-bot
 ```
 
-You need to add these following values to `config.json` file (recommended) or you can use `.env` file
+You need to add these following values to `config.json` file (recommended) or you can use `.env` as an alternative
 ```json
 {
   "token": "<your_bot_token>",
