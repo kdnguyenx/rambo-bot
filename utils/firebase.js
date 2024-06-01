@@ -18,12 +18,26 @@ const syncDiscordUsers = async (client) => {
   const usersRef = ref.child('users');
 
   usersRef.set(members);
-  ref.once('value', (snapshot) => {
-    logger.info('Successfully create or update users: ');
-    console.log(snapshot.val());
+  ref.once('value', (_) => {
+    logger.info('Successfully create or update users');
+    // console.log(snapshot.val());
+  });
+};
+
+// ONLY RUN WHEN INIT DB
+const resetEuroData = async () => {
+  const obj = require('../data/euro2024.json')
+  const db = admin.database();
+  const ref = db.ref();
+  const usersRef = ref.child('euro');
+
+  usersRef.set(obj);
+  ref.once('value', (_) => {
+    logger.info('Successfully create or update Euro data');
   });
 };
 
 module.exports = {
   syncDiscordUsers,
+  resetEuroData,
 };
