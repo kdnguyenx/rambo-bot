@@ -19,6 +19,8 @@ You need to add these following values to `config.json` file (recommended) or yo
   "channelId": "<your_target_channel_id>",
   "devChannelId": "<your_development_channel_id>",
   "voiceChannelId": "<your_target_voice_channel_id>",
+  "firebaseUrl": "<your_firebase_url>",
+  "firebaseServiceAccountPath": "<path_to_firebase_service_account_json_file>"
 }
 ```
 

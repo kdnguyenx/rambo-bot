@@ -1,21 +1,28 @@
-const { vtScanUrl, vtUrlAnalysis } = require('../utils/virus-total');
 const logger = require('../utils/logger');
+const { guildId, auditedUsers } = require('../config.json');
 
-const extractUrlsFromString = (str) => {
-  const regex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
-  const matches = str.match(regex);
-  return [...new Set(matches)];
-};
+const fetchDiscordUsers = async (client) => {
+  try {
+    const guild = await client.guilds.fetch(guildId);
+    const guildMembers = await guild.members.fetch({ user: auditedUsers.split(','), withPresences: true });
+    const members = {}
+    for (const entry of guildMembers.entries()) {
+      members[entry[0]] = {
+        id: entry[1].user.id,
+        username: entry[1].user.username,
+        globalName: entry[1].user.globalName,
+        nickname: entry[1].nickname,
+        avatar: entry[1].user.avatar,
+      };
+    }
+    return members;
+  } catch (err) {
+    logger.error(err);
+  }
 
-const urlSafetyCheck = async (url) => {
-  let data = await vtScanUrl(url);
-  data = await vtUrlAnalysis(data.data.id);
-  const stats = data.data.attributes.stats;
-  logger.debug(JSON.stringify(stats));
-  return !(stats.malicious > 0 || stats.suspicious > 0);
+  return {}
 };
 
 module.exports = {
-  extractUrlsFromString,
-  urlSafetyCheck,
+  fetchDiscordUsers,
 };
