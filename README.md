@@ -6,7 +6,7 @@ In able to run project, make sure `node 18.16.0` or above is installed.
 
 Clone repository by `git clone` to your local computer:
 ```shell script
-$ git clone git@github.com:samothrakii/rambo-bot.git
+$ git clone git@github.com:khoanduy/rambo-bot.git
 $ cd rambo-bot
 ```
 
@@ -19,8 +19,6 @@ You need to add these following values to `config.json` file (recommended) or yo
   "channelId": "<your_target_channel_id>",
   "devChannelId": "<your_development_channel_id>",
   "voiceChannelId": "<your_target_voice_channel_id>",
-  "voiceChannelLink": "<your_target_voice_channel_link>",
-  "virusTotalApiKey": "<virus_total_api_key>"
 }
 ```
 
