@@ -1,4 +1,4 @@
-const logger = require('../utils/logger');
+const logger = require('./logger');
 const { guildId, auditedUsers } = require('../config.json');
 
 const fetchDiscordUsers = async (client) => {
@@ -23,6 +23,15 @@ const fetchDiscordUsers = async (client) => {
   return {}
 };
 
+const isOneDayAhead = (date) => {
+  // const afterToday = new Date(Date.now() + (24 * 60 * 60 * 1000));
+  const afterToday = new Date(Date.parse('2024-06-13T01:00:00Z') + (24 * 60 * 60 * 1000));
+  return afterToday.getUTCFullYear() === date.getUTCFullYear() &&
+    afterToday.getUTCMonth() === date.getUTCMonth() &&
+    afterToday.getUTCDate() === date.getUTCDate();
+}
+
 module.exports = {
   fetchDiscordUsers,
+  isOneDayAhead
 };

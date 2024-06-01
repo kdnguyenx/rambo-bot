@@ -1,4 +1,4 @@
-const logger = require('../utils/logger');
+const logger = require('./logger');
 const { firebaseUrl, firebaseServiceAccountPath } = require('../config.json');
 const admin = require('firebase-admin');
 const { fetchDiscordUsers } = require('./helper');
@@ -24,6 +24,12 @@ const syncDiscordUsers = async (client) => {
   });
 };
 
+const readOnceEuroInfoByPath = async (path) => {
+  const db = admin.database();
+  const ref = db.ref(`euro/${path}`);
+  return ref.once('value');
+}
+
 // ONLY RUN WHEN INIT DB
 const resetEuroData = async () => {
   const obj = require('../data/euro2024.json')
@@ -40,4 +46,5 @@ const resetEuroData = async () => {
 module.exports = {
   syncDiscordUsers,
   resetEuroData,
+  readOnceEuroInfoByPath
 };
