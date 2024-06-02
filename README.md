@@ -18,7 +18,9 @@ You need to add these following values to `config.json` file (recommended) or yo
   "guildId": "<your_guild_id>",
   "channelId": "<your_target_channel_id>",
   "devChannelId": "<your_development_channel_id>",
+  "footballChannelId": "<your_football_specific_channel_id>",
   "voiceChannelId": "<your_target_voice_channel_id>",
+  "auditedUsers": "<list_of_users_separated_by_comma>",
   "firebaseUrl": "<your_firebase_url>",
   "firebaseServiceAccountPath": "<path_to_firebase_service_account_json_file>"
 }

@@ -1,6 +1,6 @@
 const { Events } = require('discord.js');
 const logger = require('../utils/logger');
-const { syncDiscordUsers } = require('../utils/firebase');
+const { syncDiscordUsers, resetEuroData } = require('../utils/firebase');
 const { euroDailyMorningJob } = require('../utils/football');
 
 module.exports = {
@@ -11,6 +11,7 @@ module.exports = {
     syncDiscordUsers(client);
 
     logger.info('Starting Euro daily morning check job');
-    euroDailyMorningJob();
+    euroDailyMorningJob(client);
+    // resetEuroData();
   },
 };
