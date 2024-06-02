@@ -7,7 +7,7 @@ const { footballChannelId, devChannelId } = require('../config.json');
 
 const euroDailyMorningJob = (client) => {
   return CronJob.from({
-     cronTime: '0 30 * * * *',
+     cronTime: '0 0 1 * * *',
     // cronTime: '10 * * * * *',
     onTick: async () => {
       try {
