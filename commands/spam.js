@@ -1,15 +1,13 @@
-const { SlashCommandBuilder } = require('discord.js');
+import { SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
-  data: new SlashCommandBuilder()
+export const data = new SlashCommandBuilder()
     .setName('spam')
     .setDescription('Spam a specific user')
-    .addUserOption(option =>
-      option.setName('user')
+    .addUserOption(option => option.setName('user')
         .setDescription('User to spam')
-        .setRequired(true)),
-  async execute(interaction) {
+        .setRequired(true));
+
+export async function execute(interaction) {
     const user = interaction.options.get('user').user;
     await interaction.reply(`${user} `.repeat(20));
-  },
-};
+}

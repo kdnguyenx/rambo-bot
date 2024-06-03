@@ -1,14 +1,13 @@
-const logger = require('./logger');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
-const { readOnceEuroInfoByPath, updateEuroMatch } = require('./firebase');
-const { isOneDayAhead } = require('./helper');
-const { CronJob } = require('cron');
-const { footballChannelId, devChannelId } = require('../config.json');
+import logger from './logger.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { readOnceEuroInfoByPath, updateEuroMatch } from './firebase.js';
+import { isOneDayAhead } from './helper.js';
+import { CronJob } from 'cron';
 
-const euroDailyMorningJob = (client) => {
+export function euroDailyMorningJob(client) {
   return CronJob.from({
-     cronTime: '0 0 1 * * *',
-    // cronTime: '10 * * * * *',
+    // cronTime: '0 0 1 * * *',
+    cronTime: '10 * * * * *',
     onTick: async () => {
       try {
         const resp = await readOnceEuroInfoByPath('matches');
@@ -16,7 +15,7 @@ const euroDailyMorningJob = (client) => {
           const date = new Date(Date.parse(match.date));
           return isOneDayAhead(date);
         });
-        const channel = await client.channels.fetch(footballChannelId);
+        const channel = await client.channels.fetch(process.env.DEV_CHANNEL_ID);
         matches.forEach((match) => {
           const message = matchVoteMessageComponent(match);
           channel.send(message).then((msg) => {
@@ -33,7 +32,7 @@ const euroDailyMorningJob = (client) => {
   });
 };
 
-const matchVoteMessageComponent = (match) => {
+function matchVoteMessageComponent(match) {
   const home = new ButtonBuilder()
     .setCustomId(`${match.home}_${match.id}`)
     .setLabel(match.home.toUpperCase())
@@ -73,7 +72,3 @@ const matchVoteMessageComponent = (match) => {
     components: [row],
   }
 }
-
-module.exports = {
-  euroDailyMorningJob,
-};

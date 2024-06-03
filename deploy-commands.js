@@ -1,17 +1,20 @@
-const { REST, Routes } = require('discord.js');
-const { appId, guildId, token } = require('./config.json');
-const fs = require('node:fs');
-const path = require('node:path');
-const logger = require('./utils/logger');
+import { REST, Routes } from 'discord.js';
+import { readdirSync } from 'node:fs';
+import { fileURLToPath } from 'url';
+import { join, dirname } from 'node:path';
+import * as dotenv from 'dotenv';
+import logger from './utils/logger.js';
 
+dotenv.config();
 const commands = [];
+
 // Grab all the command files from the commands directory you created earlier
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandsPath = join(dirname(fileURLToPath(import.meta.url)), 'commands');
+const commandFiles = readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-  const filePath = path.join(commandsPath, file);
-  const command = require(filePath);
+  const filePath = join(commandsPath, file);
+  const command = await import(filePath);
   // Set a new item in the Collection with the key as the command name and the value as the exported module
   if ('data' in command && 'execute' in command) {
     commands.push(command.data.toJSON());
@@ -21,7 +24,7 @@ for (const file of commandFiles) {
 }
 
 // Construct and prepare an instance of the REST module
-const rest = new REST().setToken(token);
+const rest = new REST().setToken(process.env.TOKEN);
 
 // and deploy your commands!
 (async () => {
@@ -30,7 +33,7 @@ const rest = new REST().setToken(token);
 
     // The put method is used to fully refresh all commands in the guild with the current set
     const data = await rest.put(
-      Routes.applicationGuildCommands(appId, guildId),
+      Routes.applicationGuildCommands(process.env.APP_ID, process.env.GUILD_ID),
       { body: commands },
     );
 

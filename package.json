@@ -1,8 +1,9 @@
 {
   "name": "rambo-bot",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Our discord bot, its name is Rambo",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "deplc": "node deploy-commands.js",
@@ -10,22 +11,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samothrakii/rambo-bot.git"
+    "url": "git+https://github.com/khoanduy/rambo-bot.git"
   },
   "keywords": [
     "discord-bot"
   ],
   "author": "Khoa Nguyen",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/samothrakii/rambo-bot/issues"
+    "url": "https://github.com/khoanduy/rambo-bot/issues"
   },
-  "homepage": "https://github.com/samothrakii/rambo-bot#readme",
+  "homepage": "https://github.com/khoanduy/rambo-bot#readme",
   "dependencies": {
-    "axios": "^1.4.0",
     "cron": "^3.1.7",
     "discord.js": "^14.11.0",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "firebase-admin": "^12.1.1",
     "winston": "^3.9.0"
   },

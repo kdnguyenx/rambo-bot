@@ -1,20 +1,20 @@
-const winston = require('winston');
+import { createLogger, format as _format, transports as _transports } from 'winston';
 
-const logger = winston.createLogger({
+const logger = createLogger({
   level: 'debug',
-  format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    winston.format.colorize(),
-    winston.format.errors({ stack: true }),
-    winston.format.printf(l => `${l.timestamp} ${l.level}: ${l.message}` + (l.splat !== undefined ? `${l.splat}` : ' ')),
+  format: _format.combine(
+    _format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    _format.colorize(),
+    _format.errors({ stack: true }),
+    _format.printf(l => `${l.timestamp} ${l.level}: ${l.message}` + (l.splat !== undefined ? `${l.splat}` : ' ')),
   ),
   transports: [
     // - Write all logs with importance level of `error` or less to `error.log`
     // - Write all logs with importance level of `info` or less to `combined.log`
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    new _transports.Console(),
+    new _transports.File({ filename: 'error.log', level: 'error' }),
+    new _transports.File({ filename: 'combined.log' }),
   ],
 });
 
-module.exports = logger;
+export default logger;

@@ -1,10 +1,9 @@
-const logger = require('./logger');
-const { guildId, auditedUsers } = require('../config.json');
+import logger from './logger.js';
 
-const fetchDiscordUsers = async (client) => {
+export async function fetchDiscordUsers(client) {
   try {
-    const guild = await client.guilds.fetch(guildId);
-    const guildMembers = await guild.members.fetch({ user: auditedUsers.split(','), withPresences: true });
+    const guild = await client.guilds.fetch(process.env.GUILD_ID);
+    const guildMembers = await guild.members.fetch({ user: process.env.AUDITED_USERS.split(','), withPresences: true });
     const members = {}
     for (const entry of guildMembers.entries()) {
       members[entry[0]] = {
@@ -23,15 +22,10 @@ const fetchDiscordUsers = async (client) => {
   return {}
 };
 
-const isOneDayAhead = (date) => {
+export function isOneDayAhead(date) {
   // const afterToday = new Date(Date.now() + (24 * 60 * 60 * 1000));
   const afterToday = new Date(Date.parse('2024-06-13T01:00:00Z') + (24 * 60 * 60 * 1000));
   return afterToday.getUTCFullYear() === date.getUTCFullYear() &&
     afterToday.getUTCMonth() === date.getUTCMonth() &&
     afterToday.getUTCDate() === date.getUTCDate();
 }
-
-module.exports = {
-  fetchDiscordUsers,
-  isOneDayAhead
-};

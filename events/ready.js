@@ -1,17 +1,16 @@
-const { Events } = require('discord.js');
-const logger = require('../utils/logger');
-const { syncDiscordUsers, resetEuroData } = require('../utils/firebase');
-const { euroDailyMorningJob } = require('../utils/football');
+import { Events } from 'discord.js';
+import logger from '../utils/logger.js';
+import { fetchDiscordUsers } from '../utils/helper.js';
+import { euroDailyMorningJob } from '../utils/football.js';
 
-module.exports = {
-  name: Events.ClientReady,
-  once: true,
-  execute(client) {
-    logger.info(`Ready! Logged in as ${client.user.tag}`);
-    syncDiscordUsers(client);
+export const name = Events.ClientReady;
+export const once = true;
+export async function execute(client) {
+  logger.info(`Ready! Logged in as ${client.user.tag}`);
 
-    logger.info('Starting Euro daily morning check job');
-    euroDailyMorningJob(client);
-    // resetEuroData();
-  },
-};
+  logger.info('Starting Euro daily morning check job');
+  euroDailyMorningJob(client);
+
+  logger.info('Pre-fetch audited users');
+  client.cachedUsers = await fetchDiscordUsers(client);
+}

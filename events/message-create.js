@@ -1,12 +1,8 @@
-const { Events } = require('discord.js');
-const logger = require('../utils/logger');
-const { extractUrlsFromString, urlSafetyCheck } = require('../utils/helper');
+import { Events } from 'discord.js';
+import logger from '../utils/logger.js';
 
-module.exports = {
-  name: Events.MessageCreate,
-  async execute(message) {
+export const name = Events.MessageCreate;
+export async function execute(message) {
     if (message.author.bot) return;
-    logger.debug(`Received message [${message.content}]`);
-    // message.channel.send(msg);
-  },
-};
+    // logger.debug(`Received message [${message.content}]`);
+}

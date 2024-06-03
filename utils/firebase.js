@@ -1,54 +1,40 @@
-const logger = require('./logger');
-const { firebaseUrl, firebaseServiceAccountPath } = require('../config.json');
-const admin = require('firebase-admin');
-const { fetchDiscordUsers } = require('./helper');
+import { initializeApp, applicationDefault } from 'firebase-admin/app';
+import { getDatabase } from 'firebase-admin/database';
+import logger from './logger.js';
 
-const serviceAccount = require(firebaseServiceAccountPath);
+//const saFile = await readFile(process.env.FIREBASE_SERVICE_ACCOUNT_PATH, 'utf-8');
+//const serviceAccount = JSON.stringify(saFile);
 
-const app = admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: firebaseUrl
+initializeApp({
+  credential: applicationDefault(),
+  databaseURL: process.env.FIREBASE_DB_URL
 });
-const db = admin.database();
+const db = getDatabase();
 
-const syncDiscordUsers = async (client) => {
-  const members = await fetchDiscordUsers(client);
-
-  const ref = db.ref('users');
-  ref.update(members, (_) => {
-    logger.info('Successfully update users');
-  });
-};
-
-const loadAllDiscordUsers = async () => {
-  return db.ref('users').once('value');
+export async function readOnceEuroInfoByPath(path) {
+  return db.ref(`euro/${path}`).once('value');
 }
 
-const readOnceEuroInfoByPath = async (path) => {
-  const ref = db.ref(`euro/${path}`);
-  return ref.once('value');
-}
-
-const updateEuroMatch = async (match, content) => {
+export async function updateEuroMatch(match, content) {
   const ref = db.ref(`euro/matches/${match.id - 1}`);
   ref.update(content);
   logger.info(`Updated match ID [${match.id}] between ${match.home} and ${match.away}`);
 }
 
-const updateEuroMatchVote = async (matchId, userId, vote, messageId) => {
+export async function updateEuroMatchVote(matchId, userId, vote, messageId) {
   const ref = db.ref(`euro/votes/${matchId - 1}/${messageId}/${userId}`);
   ref.update({ vote: vote });
   logger.info(`Updated votes match ID [${matchId}] with message ID [${messageId}] of user ${userId}`);
 }
 
-const readOnceEuroMatchVotes = async (matchId, messageId) => {
+export async function readOnceEuroMatchVotes(matchId, messageId) {
   const ref = db.ref(`euro/votes/${matchId - 1}/${messageId}`);
   return ref.once('value');
 }
 
 // ONLY RUN WHEN INIT DB
-const resetEuroData = async () => {
-  const obj = require('../data/euro2024.json')
+export async function resetEuroData() {
+  const obj = await import('../data/euro2024.json')
   const ref = db.ref();
   const usersRef = ref.child('euro');
 
@@ -56,14 +42,4 @@ const resetEuroData = async () => {
   ref.once('value', (_) => {
     logger.info('Successfully create or update Euro data');
   });
-};
-
-module.exports = {
-  syncDiscordUsers,
-  loadAllDiscordUsers,
-  resetEuroData,
-  readOnceEuroInfoByPath,
-  updateEuroMatch,
-  updateEuroMatchVote,
-  readOnceEuroMatchVotes
 };
