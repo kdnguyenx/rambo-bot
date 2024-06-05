@@ -6,8 +6,8 @@ import { CronJob } from 'cron';
 
 export function euroDailyMorningJob(client) {
   return CronJob.from({
-    // cronTime: '0 0 1 * * *',
-    cronTime: '0,30 * * * * *',
+    cronTime: '0 0 1 * * *',
+    // cronTime: '0,30 * * * * *',
     onTick: async () => {
       try {
         const resp = await readOnceEuroInfoByPath('matches');
@@ -15,7 +15,7 @@ export function euroDailyMorningJob(client) {
           const date = new Date(Date.parse(match.date));
           return isOneDayAhead(date);
         });
-        const channel = await client.channels.fetch(process.env.DEV_CHANNEL_ID);
+        const channel = await client.channels.fetch(process.env.FOOTBALL_CHANNEL_ID);
         matches.forEach((match) => {
           const message = matchVoteMessageComponent(match);
           channel.send(message).then((msg) => {
