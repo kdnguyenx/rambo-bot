@@ -1,15 +1,21 @@
 import logger from '../utils/logger.js';
-import { Events } from 'discord.js';
+import { ComponentType, Events, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
 import { updateEuroMatchVote, readOnceEuroMatchVotes } from '../utils/firebase.js';
 
 export const name = Events.InteractionCreate;
 export async function execute(interaction) {
   if (interaction.isButton()) {
-    const voteMatchId = interaction.customId.split('_');
+    const [teamId, matchId, date] = interaction.customId.split('_');
+
     try {
-      await updateEuroMatchVote(voteMatchId[1], interaction.user.id, voteMatchId[0], interaction.message.id);
+      if (Date.parse(date) < Date.now()) {
+        interaction.reply('This match is not available anymore!');
+        return;
+      }
+
+      await updateEuroMatchVote(matchId, interaction.user.id, teamId, interaction.message.id);
       const users = interaction.client.cachedUsers;
-      const votes = (await readOnceEuroMatchVotes(voteMatchId[1], interaction.message.id)).val();
+      const votes = (await readOnceEuroMatchVotes(matchId, interaction.message.id)).val();
       const members = [];
       for (const [key, _] of Object.entries(votes)) {
         members.push(users[key].nickname);
@@ -20,6 +26,8 @@ export async function execute(interaction) {
     } catch (err) {
       logger.error(err);
     }
+
+    return;
   }
 
   if (interaction.isChatInputCommand()) {
@@ -36,5 +44,7 @@ export async function execute(interaction) {
       logger.error(`Error executing ${interaction.commandName}`);
       logger.error(error);
     }
+
+    return;
   }
 }

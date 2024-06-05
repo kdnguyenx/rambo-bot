@@ -4,7 +4,7 @@ export async function fetchDiscordUsers(client) {
   try {
     const guild = await client.guilds.fetch(process.env.GUILD_ID);
     const guildMembers = await guild.members.fetch({ user: process.env.AUDITED_USERS.split(','), withPresences: true });
-    const members = {}
+    const members = {};
     for (const entry of guildMembers.entries()) {
       members[entry[0]] = {
         id: entry[1].user.id,
@@ -19,8 +19,8 @@ export async function fetchDiscordUsers(client) {
     logger.error(err);
   }
 
-  return {}
-};
+  return {};
+}
 
 export function isOneDayAhead(date) {
   // const afterToday = new Date(Date.now() + (24 * 60 * 60 * 1000));

@@ -7,7 +7,7 @@ import { CronJob } from 'cron';
 export function euroDailyMorningJob(client) {
   return CronJob.from({
     // cronTime: '0 0 1 * * *',
-    cronTime: '10 * * * * *',
+    cronTime: '0,30 * * * * *',
     onTick: async () => {
       try {
         const resp = await readOnceEuroInfoByPath('matches');
@@ -28,23 +28,23 @@ export function euroDailyMorningJob(client) {
       }
     },
     start: true,
-    timeZone: 'utc'
+    timeZone: 'utc',
   });
-};
+}
 
 function matchVoteMessageComponent(match) {
   const home = new ButtonBuilder()
-    .setCustomId(`${match.home}_${match.id}`)
+    .setCustomId(`${match.home}_${match.id}_${match.date}`)
     .setLabel(match.home.toUpperCase())
     .setStyle(ButtonStyle.Success);
 
   const draw = new ButtonBuilder()
-    .setCustomId(`draw_${match.id}`)
+    .setCustomId(`draw_${match.id}_${match.date}`)
     .setLabel('DRAW')
     .setStyle(ButtonStyle.Primary);
 
   const away = new ButtonBuilder()
-    .setCustomId(`${match.away}_${match.id}`)
+    .setCustomId(`${match.away}_${match.id}_${match.date}`)
     .setLabel(match.away.toUpperCase())
     .setStyle(ButtonStyle.Danger);
 
@@ -53,15 +53,15 @@ function matchVoteMessageComponent(match) {
     .setDescription(`Time: **${(new Date(match.date)).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}**`)
     .setFields(
       {
-        name: ` Odds `,
+        name: ' Odds ',
         value: `Home: \`${match.odds.home}\`  Draw: \`${match.odds.draw}\`  Away: \`${match.odds.away}\``,
-        inline: false
+        inline: false,
       },
       {
         name: ' Location ',
         value: match.location,
-        inline: false
-      }
+        inline: false,
+      },
     );
 
   const row = new ActionRowBuilder()
@@ -70,5 +70,5 @@ function matchVoteMessageComponent(match) {
   return {
     embeds: [embed],
     components: [row],
-  }
+  };
 }

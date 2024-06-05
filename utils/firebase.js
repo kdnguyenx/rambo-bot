@@ -2,12 +2,9 @@ import { initializeApp, applicationDefault } from 'firebase-admin/app';
 import { getDatabase } from 'firebase-admin/database';
 import logger from './logger.js';
 
-//const saFile = await readFile(process.env.FIREBASE_SERVICE_ACCOUNT_PATH, 'utf-8');
-//const serviceAccount = JSON.stringify(saFile);
-
 initializeApp({
   credential: applicationDefault(),
-  databaseURL: process.env.FIREBASE_DB_URL
+  databaseURL: process.env.FIREBASE_DB_URL,
 });
 const db = getDatabase();
 
@@ -34,12 +31,12 @@ export async function readOnceEuroMatchVotes(matchId, messageId) {
 
 // ONLY RUN WHEN INIT DB
 export async function resetEuroData() {
-  const obj = await import('../data/euro2024.json')
+  const obj = await import('../data/euro2024.json');
   const ref = db.ref();
   const usersRef = ref.child('euro');
 
   usersRef.set(obj);
-  ref.once('value', (_) => {
+  ref.once('value', () => {
     logger.info('Successfully create or update Euro data');
   });
-};
+}
