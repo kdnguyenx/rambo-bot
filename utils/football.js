@@ -15,7 +15,7 @@ export function euroDailyMorningJob(client) {
           const date = new Date(Date.parse(match.date));
           return isOneDayAhead(date);
         });
-        const channel = await client.channels.fetch(process.env.FOOTBALL_CHANNEL_ID);
+        const channel = await client.channels.fetch(process.env.DEV_CHANNEL_ID);
         matches.forEach((match) => {
           const message = matchVoteMessageComponent(match);
           channel.send(message).then((msg) => {
