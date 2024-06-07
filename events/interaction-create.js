@@ -16,12 +16,15 @@ export async function execute(interaction) {
       await updateEuroMatchVote(matchId, interaction.user.id, teamId, interaction.message.id);
       const users = interaction.client.cachedUsers;
       const votes = (await readOnceEuroMatchVotes(matchId, interaction.message.id)).val();
+
       const members = [];
       for (const [key, _] of Object.entries(votes)) {
         members.push(users[key].nickname);
       }
+
+      const names = members.join(', ');
       interaction.update({
-        content: `Voted: ${members.join(',')}`,
+        content: `Voted: ${names}`,
       });
     } catch (err) {
       logger.error(err);

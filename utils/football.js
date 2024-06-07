@@ -32,10 +32,10 @@ export function euroDailyMorningJob(client) {
   });
 }
 
-export function euroDailyCalculatingJob(client) {
+export function euroDailyCalculatingJob() {
   return CronJob.from({
     cronTime: '0 0 3,15 * * *',
-    // cronTime: '0,30 * * * * *',
+    // cronTime: '15,45 * * * * *',
     onTick: async () => {
       try {
         const resp = await readOnceEuroInfoByPath('matches');
@@ -61,8 +61,8 @@ export function euroDailyCalculatingJob(client) {
           if (key in votingObj) {
             if (match.messageId in votingObj[key]) {
               const votes = votingObj[key][match.messageId];
-              const count = await calculatePlayerPoints(players, votes, match);
-              await calculateNoVotedPlayerPoints(players, match, count);
+              const votedPlayers = await calculatePlayerPoints(players, votes, match);
+              await calculateNoVotedPlayerPoints(players, match, votedPlayers);
               await updateEuroMatch(match, { isCalculated: true });
             } else {
               logger.warn(`Match ${match.id} message ID is not correct, consider to update manually!`);
@@ -136,7 +136,7 @@ function matchWinner(match) {
 function winnerOdds(match, winner) {
   if (winner === match.home) {
     return match.odds.home;
-  } else if (result === match.away) {
+  } else if (winner === match.away) {
     return match.odds.away;
   }
   return match.odds.draw;
@@ -145,44 +145,32 @@ function winnerOdds(match, winner) {
 async function calculatePlayerPoints(players, votes, match) {
   const winner = matchWinner(match);
   const odds = winnerOdds(match, winner);
-  const count = {};
+  const votedPlayers = [];
 
   for (const [k, v] of Object.entries(votes)) {
-    if (v.vote in count) {
-      count[v.vote].push(k);
-    } else {
-      count[v.vote] = [k];
-    }
-
+    votedPlayers.push(k);
     await updatePlayerPoints(k, {
       matches: players[k].matches + 1,
       points: v.vote === winner ? players[k].points + 1 + odds : players[k].points - 1,
     });
   }
-  return count;
+
+  return votedPlayers;
 }
 
-async function calculateNoVotedPlayerPoints(players, match, count) {
-  let least = 'draw';
-  let curMin = 100;
-  const votedPlayers = [];
-
-  for (const [k, v] of Object.entries(count)) {
-    votedPlayers.push(...v);
-    if (v.length < curMin) {
-      curMin = v.length;
-      least = k;
-    }
-  }
+async function calculateNoVotedPlayerPoints(players, match, votedPlayers) {
+  const result = [match.home, 'draw', match.away];
+  console.log(result);
 
   const winner = matchWinner(match);
   const odds = winnerOdds(match, winner);
 
   for (const [k, v] of Object.entries(players)) {
+    const rand = result[Math.floor(Math.random() * result.length)];
     if (!votedPlayers.includes(k)) {
       await updatePlayerPoints(k, {
         matches: v.matches + 1,
-        points: least === winner ? v.points + 1 + odds : v.points - 1,
+        points: rand === winner ? v.points + 1 + odds : v.points - 1,
       });
     }
   }

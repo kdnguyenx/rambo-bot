@@ -12,7 +12,7 @@ export async function execute(client) {
   euroDailyMorningJob(client);
 
   logger.info('Starting Euro daily calculating job');
-  euroDailyCalculatingJob(client);
+  euroDailyCalculatingJob();
 
   logger.info('Pre-fetch audited users');
   client.cachedUsers = await fetchDiscordUsers(client);

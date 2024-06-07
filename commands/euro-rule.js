@@ -11,7 +11,7 @@ export async function execute(interaction) {
 - Mỗi trận sẽ có Odds của mỗi trận được show trong message theo format home (đội nhà): \`4.5\` - draw (hoà): \`3\` - away (đội khách): \`0.5\` và sẽ mặc định là 10k cho tất cả.
 - Số nhận lại được tính bằng cách 10 x odds + 10 (ví dụ: nếu chọn hoà thì nhận về 10 x 3 + 10 là 40, còn chọn đội khách thì nhận về 15).
 - Tất cả tiền thua được đưa vào quỹ chung vì chúng ta không có cái. Nếu cuối mùa quỹ chung âm thì thu đều tất cả người chơi sau đó sẽ trả theo tổng tiền thắng của từng người, ngược lại thì sẽ chia đều cho tất cả người chơi.
-- Những người chơi không vote trong thời gian quy định sẽ mặc định vào nhóm đang có số lượng ít nhất.
+- Những người chơi không vote trong thời gian quy định sẽ mặc định random vào nhóm bất kỳ.
 - Kết quả sẽ chỉ được tính trong 90 phút + hiệp phụ (nếu có).
-- Nếu đồng ý và muốn tham gia, dùng command /euro-register để tham gia.`);
+- Nếu đồng ý dùng command /euro-register để tham gia. GLHF!`);
 }
