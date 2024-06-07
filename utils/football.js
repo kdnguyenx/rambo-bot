@@ -1,6 +1,6 @@
 import logger from './logger.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { readOnceEuroInfoByPath, updateEuroMatch } from './firebase.js';
+import { readOnceEuroInfoByPath, updateEuroMatch, updatePlayerPoints } from './firebase.js';
 import { isOneDayAhead } from './helper.js';
 import { CronJob } from 'cron';
 
@@ -23,6 +23,56 @@ export function euroDailyMorningJob(client) {
             updateEuroMatch(match, { 'messageId': msg.id });
           });
         });
+      } catch (err) {
+        logger.error(err);
+      }
+    },
+    start: true,
+    timeZone: 'utc',
+  });
+}
+
+export function euroDailyCalculatingJob(client) {
+  return CronJob.from({
+    cronTime: '0 0 3,15 * * *',
+    // cronTime: '0,30 * * * * *',
+    onTick: async () => {
+      try {
+        const resp = await readOnceEuroInfoByPath('matches');
+        const matches = resp.val().filter((match) => {
+          return match.hasResult && !match.isCalculated;
+        });
+
+        if (matches.length === 0) {
+          logger.warn('No match to calculate!');
+          return;
+        }
+
+        const votingObj = (await readOnceEuroInfoByPath('votes')).val();
+        const players = (await readOnceEuroInfoByPath('players')).val();
+
+        for (const match of matches) {
+          if (!match.messageId) {
+            logger.warn(`Skipped match ${match.id} due to empty message ID, consider to update manually.`);
+            continue;
+          }
+
+          const key = `${match.id - 1}`;
+          if (key in votingObj) {
+            if (match.messageId in votingObj[key]) {
+              const votes = votingObj[key][match.messageId];
+              const count = await calculatePlayerPoints(players, votes, match);
+              await calculateNoVotedPlayerPoints(players, match, count);
+              await updateEuroMatch(match, { isCalculated: true });
+            } else {
+              logger.warn(`Match ${match.id} message ID is not correct, consider to update manually!`);
+            }
+          } else {
+            logger.warn(`Match ${match.id} has not been voted yet!`);
+          }
+        }
+
+        logger.info(`Calculated ${matches.length} matche(s) successfully`);
       } catch (err) {
         logger.error(err);
       }
@@ -71,4 +121,69 @@ function matchVoteMessageComponent(match) {
     embeds: [embed],
     components: [row],
   };
+}
+
+function matchWinner(match) {
+  if (match.result.home > match.result.away) {
+    return match.home;
+  } else if (match.result.home < match.result.away) {
+    return match.away;
+  } else {
+    return 'draw';
+  }
+}
+
+function winnerOdds(match, winner) {
+  if (winner === match.home) {
+    return match.odds.home;
+  } else if (result === match.away) {
+    return match.odds.away;
+  }
+  return match.odds.draw;
+}
+
+async function calculatePlayerPoints(players, votes, match) {
+  const winner = matchWinner(match);
+  const odds = winnerOdds(match, winner);
+  const count = {};
+
+  for (const [k, v] of Object.entries(votes)) {
+    if (v.vote in count) {
+      count[v.vote].push(k);
+    } else {
+      count[v.vote] = [k];
+    }
+
+    await updatePlayerPoints(k, {
+      matches: players[k].matches + 1,
+      points: v.vote === winner ? players[k].points + 1 + odds : players[k].points - 1,
+    });
+  }
+  return count;
+}
+
+async function calculateNoVotedPlayerPoints(players, match, count) {
+  let least = 'draw';
+  let curMin = 100;
+  const votedPlayers = [];
+
+  for (const [k, v] of Object.entries(count)) {
+    votedPlayers.push(...v);
+    if (v.length < curMin) {
+      curMin = v.length;
+      least = k;
+    }
+  }
+
+  const winner = matchWinner(match);
+  const odds = winnerOdds(match, winner);
+
+  for (const [k, v] of Object.entries(players)) {
+    if (!votedPlayers.includes(k)) {
+      await updatePlayerPoints(k, {
+        matches: v.matches + 1,
+        points: least === winner ? v.points + 1 + odds : v.points - 1,
+      });
+    }
+  }
 }

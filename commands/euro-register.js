@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { updatePlayerInfo } from '../utils/firebase.js';
+import logger from '../utils/logger.js';
 
 export const data = new SlashCommandBuilder()
   .setName('euro-register')
