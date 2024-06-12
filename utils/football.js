@@ -62,17 +62,18 @@ export function euroDailyCalculatingJob() {
             if (match.messageId in votingObj[key]) {
               const votes = votingObj[key][match.messageId];
               const votedPlayers = await calculatePlayerPoints(players, votes, match);
-              await calculateNoVotedPlayerPoints(players, match, votedPlayers);
+              await calculateRemainingPlayerPoints(players, match, votedPlayers);
               await updateEuroMatch(match, { isCalculated: true });
+              logger.info(`Calculated match ${match.id} successfully`);
             } else {
               logger.warn(`Match ${match.id} message ID is not correct, consider to update manually!`);
             }
           } else {
-            logger.warn(`Match ${match.id} has not been voted yet!`);
+            logger.warn(`Match ${match.id} has not been voted yet! All votes will be randomed!`);
+            const votedPlayers = [];
+            await calculateRemainingPlayerPoints(players, match, votedPlayers);
           }
         }
-
-        logger.info(`Calculated ${matches.length} matche(s) successfully`);
       } catch (err) {
         logger.error(err);
       }
@@ -158,9 +159,8 @@ async function calculatePlayerPoints(players, votes, match) {
   return votedPlayers;
 }
 
-async function calculateNoVotedPlayerPoints(players, match, votedPlayers) {
+async function calculateRemainingPlayerPoints(players, match, votedPlayers) {
   const result = [match.home, 'draw', match.away];
-  console.log(result);
 
   const winner = matchWinner(match);
   const odds = winnerOdds(match, winner);
