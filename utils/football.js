@@ -152,7 +152,7 @@ async function calculatePlayerPoints(players, votes, match) {
     votedPlayers.push(k);
     await updatePlayerPoints(k, {
       matches: players[k].matches + 1,
-      points: v.vote === winner ? players[k].points + 1 + odds : players[k].points - 1,
+      points: v.vote === winner ? players[k].points + odds : players[k].points - 1,
     });
   }
 
@@ -170,7 +170,7 @@ async function calculateRemainingPlayerPoints(players, match, votedPlayers) {
     if (!votedPlayers.includes(k)) {
       await updatePlayerPoints(k, {
         matches: v.matches + 1,
-        points: rand === winner ? v.points + 1 + odds : v.points - 1,
+        points: rand === winner ? v.points + odds : v.points - 1,
       });
     }
   }
