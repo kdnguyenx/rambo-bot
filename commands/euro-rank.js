@@ -33,7 +33,7 @@ export async function execute(interaction) {
     rankedPlayers.forEach((player, index) => {
       embeds.push(new EmbedBuilder()
         .setTitle(`Rank No. ${index + 1}`)
-        .setDescription(`Balance: ${formatter.format(player.balance * 10000)}`)
+        .setDescription(`Balance: ${formatter.format(player.balance * 1000)}`)
         .setAuthor({ name: player.nickname, iconURL: player.avatar })
       );
     });

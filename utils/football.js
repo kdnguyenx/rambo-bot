@@ -6,7 +6,7 @@ import { CronJob } from 'cron';
 
 export function euroDailyMorningJob(client) {
   return CronJob.from({
-    cronTime: '0 0 1 * * *',
+    cronTime: '0 0 2 * * *',
     // cronTime: '0,30 * * * * *',
     onTick: async () => {
       try {
@@ -34,7 +34,7 @@ export function euroDailyMorningJob(client) {
 
 export function euroDailyCalculatingJob() {
   return CronJob.from({
-    cronTime: '0 0 3,15 * * *',
+    cronTime: '0 0 * * * *',
     // cronTime: '15,45 * * * * *',
     onTick: async () => {
       try {
@@ -74,6 +74,8 @@ export function euroDailyCalculatingJob() {
             await calculateRemainingPlayerPoints(players, match, votedPlayers);
           }
         }
+        await updatePlayerPoints(players);
+        logger.info('Players updated');
       } catch (err) {
         logger.error(err);
       }
@@ -150,10 +152,10 @@ async function calculatePlayerPoints(players, votes, match) {
 
   for (const [k, v] of Object.entries(votes)) {
     votedPlayers.push(k);
-    await updatePlayerPoints(k, {
+    players[k] = {
       matches: players[k].matches + 1,
-      points: v.vote === winner ? players[k].points + odds : players[k].points - 1,
-    });
+      points: v.vote === winner ? players[k].points + odds * 10 : players[k].points - 10,
+    };
   }
 
   return votedPlayers;
@@ -168,10 +170,10 @@ async function calculateRemainingPlayerPoints(players, match, votedPlayers) {
   for (const [k, v] of Object.entries(players)) {
     const rand = result[Math.floor(Math.random() * result.length)];
     if (!votedPlayers.includes(k)) {
-      await updatePlayerPoints(k, {
+      players[k] = {
         matches: v.matches + 1,
-        points: rand === winner ? v.points + odds : v.points - 1,
-      });
+        points: rand === winner ? v.points + odds * 10 : v.points - 10,
+      };
     }
   }
 }

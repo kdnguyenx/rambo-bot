@@ -81,11 +81,11 @@ export async function updatePlayerInfo(userId) {
   return 'Something wrong happened!';
 }
 
-export async function updatePlayerPoints(userId, content) {
+export async function updatePlayerPoints(content) {
   try {
-    const ref = db.ref(`euro/players/${userId}`);
+    const ref = db.ref('euro/players');
     await ref.update(content);
-    logger.info(`Updated player with ID [${userId}] and content ${content}`);
+    logger.info(`Updated players with content ${content}`);
   } catch (err) {
     logger.error(err);
   }
