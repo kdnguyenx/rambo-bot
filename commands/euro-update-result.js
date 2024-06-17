@@ -17,7 +17,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute(interaction) {
   try {
-    const matchId = interaction.options.get('match-id').value;
+    const matchId = parseInt(interaction.options.get('match-id').value) - 1;
     const homeScore = interaction.options.get('home-score').value;
     const awayScore = interaction.options.get('away-score').value;
 

@@ -115,6 +115,11 @@ function matchVoteMessageComponent(match) {
         value: match.location,
         inline: false,
       },
+      {
+        name: ' Match ID ',
+        value: match.id,
+        inline: false,
+      },
     );
 
   const row = new ActionRowBuilder()
