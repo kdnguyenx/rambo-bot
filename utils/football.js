@@ -6,7 +6,7 @@ import { CronJob } from 'cron';
 
 export function euroDailyMorningJob(client) {
   return CronJob.from({
-    cronTime: '0 0 2 * * *',
+    cronTime: '0 30 1 * * *',
     // cronTime: '0,30 * * * * *',
     onTick: async () => {
       try {
@@ -117,7 +117,7 @@ function matchVoteMessageComponent(match) {
       },
       {
         name: ' Match ID ',
-        value: match.id,
+        value: `${match.id}`,
         inline: false,
       },
     );
