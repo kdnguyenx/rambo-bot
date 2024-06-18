@@ -1,0 +1,13 @@
+[project]
+name = "rambo-bot"
+version = "0.0.1"
+license = { file = "LICENSE" }
+readme = "README.md"
+
+description = "My Discord bot, its name is Rambo"
+authors = [{name = "Nguyen Duy Khoa"}]
+
+dependencies = [
+    "python-dotenv >= 1.0.1",
+]
+requires-python = ">=3.10"
