@@ -20,11 +20,8 @@ export async function execute(interaction) {
       });
     }
     rankedPlayers.sort((a, b) => b.balance - a.balance);
-    const embeds = [];
-    const embed = new EmbedBuilder()
-      .setTitle('Euro Leaderboard')
-      .setDescription('Someone win and others lose');
 
+    const embeds = [];
     const formatter = new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',

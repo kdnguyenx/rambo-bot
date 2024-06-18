@@ -20,7 +20,7 @@ export async function execute(interaction) {
     }
 
     if (matches.length === 0) {
-      interaction.reply('Either match is not exist or have not had result yet!');
+      interaction.reply('Either match does not exist or has not produced result yet!');
       return;
     }
 
