@@ -8,6 +8,8 @@ description = "My Discord bot, its name is Rambo"
 authors = [{name = "Nguyen Duy Khoa"}]
 
 dependencies = [
-    "python-dotenv >= 1.0.1",
+    "python-dotenv >= 1.0",
+    "websockets >= 12.0",
+    "requests >= 2.32",
 ]
 requires-python = ">=3.10"
