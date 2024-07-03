@@ -15,6 +15,9 @@ else
   sudo systemctl stop "$SERVICE.service"
 fi
 
+# Reload daemon
+sudo systemctl daemon-reload
+
 # Enable our new service
 sudo systemctl enable $SERVICE
 
