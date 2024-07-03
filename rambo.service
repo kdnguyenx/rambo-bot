@@ -8,7 +8,8 @@ Type=simple
 User=rambo
 ExecStart=/usr/bin/node /home/rambo/rambo-bot/index.js
 WorkingDirectory=/home/rambo/rambo-bot
-Restart=on-failures
+Restart=always
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
