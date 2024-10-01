@@ -6,7 +6,7 @@ In able to run project, make sure `node 22.2.0` or above is installed.
 
 Clone repository by `git clone` to your local computer:
 ```shell script
-$ git clone git@github.com:khoanduy/rambo-bot.git
+$ git clone git@github.com:khoavi/rambo-bot.git
 $ cd rambo-bot
 ```
 
